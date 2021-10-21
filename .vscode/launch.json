@@ -12,7 +12,7 @@
       "args": ["-e", "require('@puppedo/core').run()"],
       "env": {
         "PPD_ROOT": "tests",
-        "PPD_ROOT_ADDITIONAL": ["${workspaceFolder}\\node_modules\\@puppedo\\atoms, ${workspaceFolder}\\src"],
+        "PPD_ROOT_ADDITIONAL": ["${workspaceFolder}\\node_modules\\@puppedo\\atoms, ${workspaceFolder}\\dist"],
         "PPD_TESTS": "cdp",
         "PPD_DATA": "{ \"myEnv\": \"mainEnv\" }",
         "PPD_DEBUG_MODE": "true",
