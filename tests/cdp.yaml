@@ -1,0 +1,12 @@
+name: cdp
+runTest:
+  - envSwitch:
+      bindData: { envName: 'playwright' }
+
+  - goTo:
+      data: { url: 'http:\\google.ru' }
+
+  - cdpGetSelector:
+
+  - goTo:
+      data: { url: 'http:\\ya.ru' }

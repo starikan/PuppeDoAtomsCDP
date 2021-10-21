@@ -1,0 +1,39 @@
+{
+  "name": "@puppedo/atoms-cpd",
+  "version": "1.0.0",
+  "description": "Atoms CPD for PuppeDo",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/starikan/PuppeDoAtomsCPD.git"
+  },
+  "files": [
+    "src",
+    "index.js"
+  ],
+  "keywords": [
+    "puppeteer",
+    "playwright",
+    "puppedo",
+    "testing",
+    "tests",
+    "e2e",
+    "automatization",
+    "cpd"
+  ],
+  "author": "Starodubov Sergey <4analit@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/starikan/PuppeDoAtoms/issues"
+  },
+  "homepage": "https://github.com/starikan/PuppeDoAtoms#readme",
+  "scripts": {
+    "test": "echo \"No test specified\""
+  },
+  "devDependencies": {
+    "@puppedo/atoms": "5.6.0",
+    "@puppedo/core": "2.0.0-beta.88",
+    "playwright": "1.15.2",
+    "puppeteer": "10.4.0"
+  }
+}
