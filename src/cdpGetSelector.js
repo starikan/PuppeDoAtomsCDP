@@ -933,12 +933,59 @@ module.exports = async function atomRun() {
     loader.style.setProperty('display', flag ? 'grid' : 'none');
   };
 
+  // await this.browser.on('disconnected', async (data) => {
+  //   debugger;
+  // });
+
+  const messageAdded = async (event, client, resolve) => {
+    if (!event.args.length) {
+      return;
+    }
+    try {
+      const textLog = event.args[0].value;
+      const data = JSON.parse(textLog);
+      await this.page.evaluate(switchLoader, true);
+
+      if (data.type === 'selectorClick') {
+        const selectors = generateSelectors(data.path);
+        const selectorsVariants = await checkSelectors(selectors);
+        // const { x, y } = data;
+        // const { nodeId } = await client.send('DOM.getNodeForLocation', { x, y });
+        // const nodeIdDescribe = await client.send('DOM.describeNode', { nodeId });
+
+        // const sendData = {
+        // data: selectorsVariants,
+        // type: 'atom',
+        // name: 'cdpGetSelector',
+        // envsId: this.envsId,
+        // stepId: this.stepId,
+        // };
+        // this.socket.sendYAML(sendData);
+        await this.page.evaluate(sendDataToDialog, { selectorsVariants });
+
+        console.log(selectorsVariants);
+      }
+      if (data.type === 'servise') {
+        if (data.button === 'ok') {
+          await this.page.evaluate(switchLoader, false);
+          await client.detach();
+          resolve();
+        }
+      }
+
+      await this.page.evaluate(switchLoader, false);
+    } catch (err) {
+      // debugger;
+    }
+  };
+
   this.run = () => {
     return new Promise(async (resolve, reject) => {
       const yamlFile = 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js';
       const lodashFile = 'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.core.min.js';
       // https://github.com/johannhof/xpath-dom
       const xpathFile = 'https://cdn.rawgit.com/johannhof/xpath-dom/master/dist/xpath-dom.min.js';
+
 
       try {
         await this.page.addScriptTag({ url: yamlFile });
@@ -959,50 +1006,19 @@ module.exports = async function atomRun() {
         } else if (engine === 'puppeteer') {
           client = await this.page.target().createCDPSession();
         }
-        await client.send('Console.enable');
-        client.on('Console.messageAdded', async (e) => {
-          const textLog = e.message.text;
-          try {
-            const data = JSON.parse(textLog);
-            await this.page.evaluate(switchLoader, true);
 
-            if (data.type === 'selectorClick') {
-              const selectors = generateSelectors(data.path);
-              const selectorsVariants = await checkSelectors(selectors);
-              // const { x, y } = data;
-              // const { nodeId } = await client.send('DOM.getNodeForLocation', { x, y });
-              // const nodeIdDescribe = await client.send('DOM.describeNode', { nodeId });
+        // const targets = await client.send('Target.getTargets');
 
-              // const sendData = {
-              // data: selectorsVariants,
-              // type: 'atom',
-              // name: 'cdpGetSelector',
-              // envsId: this.envsId,
-              // stepId: this.stepId,
-              // };
-              // this.socket.sendYAML(sendData);
-              await this.page.evaluate(sendDataToDialog, { selectorsVariants });
-
-              console.log(selectorsVariants);
-            }
-            if (data.type === 'servise') {
-              if (data.button === 'ok') {
-                await this.page.evaluate(switchLoader, false);
-                await client.detach();
-                resolve();
-              }
-            }
-
-            await this.page.evaluate(switchLoader, false);
-          } catch (err) {
-            // debugger;
-          }
+        // await client.send('Console.enable');
+        // client.on('Console.messageAdded', messageAdded);
+        await client.send('Runtime.enable');
+        client.on('Runtime.consoleAPICalled', async (event) => await messageAdded(event, client, resolve));
+        client.on('Runtime.executionContextsCleared', async (e) => {
+          debugger;
         });
 
         await client.send('DOM.enable');
         client.on('DOM.documentUpdated', this.run);
-
-        // debugger;
       } catch (err) {
         debugger;
         reject();
