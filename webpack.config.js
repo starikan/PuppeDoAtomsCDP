@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   cache: true,
   entry: {
-    main: './src/cdpGetSelector.js',
+    main: './src/index.js',
   },
   devtool: 'source-map',
   mode: 'production',

@@ -1,8 +1,8 @@
-const pick = (obj, fields) => Object.fromEntries(Object.entries(obj).filter(([key]) => fields.includes(key)));
+async function cdpGetSelector() {
+  const pick = (obj, fields) => Object.fromEntries(Object.entries(obj).filter(([key]) => fields.includes(key)));
 
-const dialogId = 'dialog-ppd';
+  const dialogId = 'dialog-ppd';
 
-module.exports = async function atomRun() {
   const dialogBox = () => {
     window.DialogBox = function (id, callback) {
       var _minW = 100, // The exact value get's calculated
@@ -986,7 +986,6 @@ module.exports = async function atomRun() {
       // https://github.com/johannhof/xpath-dom
       const xpathFile = 'https://cdn.rawgit.com/johannhof/xpath-dom/master/dist/xpath-dom.min.js';
 
-
       try {
         await this.page.addScriptTag({ url: yamlFile });
         await this.page.addScriptTag({ url: lodashFile });
@@ -1027,4 +1026,6 @@ module.exports = async function atomRun() {
   };
 
   await this.run();
-};
+}
+
+module.exports = { cdpGetSelector };
