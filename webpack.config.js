@@ -1,9 +1,11 @@
 const path = require('path');
 
+const CopyPlugin = require('copy-webpack-plugin');
+
 module.exports = {
   cache: true,
   entry: {
-    main: './src/index.js',
+    main: './src/index.ts',
   },
   devtool: 'source-map',
   mode: 'production',
@@ -32,4 +34,9 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     libraryTarget: 'commonjs2',
   },
+  plugins: [
+    new CopyPlugin({
+      patterns: [{ from: './src/*.yaml', to: '[name].[ext]' }],
+    }),
+  ],
 };
