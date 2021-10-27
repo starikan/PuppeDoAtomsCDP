@@ -115,11 +115,6 @@ const sendDataToDialog = (data) => {
   window.dialogDrawer(data);
 };
 
-const switchLoader = (flag = true) => {
-  const loader = document.getElementById('ppd-wait-data-process-wraper');
-  loader.style.setProperty('display', flag ? 'grid' : 'none');
-};
-
 const dialogDrawer = (dialogId) => {
   window.dialogDrawer = (data) => {
     const content = document.querySelector(`#${dialogId} .content`);
@@ -136,12 +131,4 @@ const addDialogHTML = ({ dialogId, dialogHtml }) => {
   body[0].appendChild(div);
 };
 
-const addLoader = ({ loaderId, loaderHtml }) => {
-  const body = document.getElementsByTagName('body');
-  const waiter = document.createElement('div');
-  waiter.setAttribute('id', loaderId);
-  waiter.innerHTML = loaderHtml;
-  body[0].appendChild(waiter);
-};
-
-module.exports = { runDialog, jsEvalOnClick, sendDataToDialog, switchLoader, dialogDrawer, addDialogHTML, addLoader };
+module.exports = { runDialog, jsEvalOnClick, sendDataToDialog, dialogDrawer, addDialogHTML};

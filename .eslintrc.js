@@ -26,6 +26,7 @@ module.exports = {
     'no-await-in-loop': 'off',
     'operator-linebreak': ['off', 'after'], // prettier conflict
     'no-console': 'off',
+    'import/prefer-default-export': 'off',
 
     'prettier/prettier': 'error',
     'max-len': ['error', { code: 120 }],

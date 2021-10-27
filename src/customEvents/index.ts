@@ -1,5 +1,6 @@
 import { generateSelectors, checkSelectors } from '../logic/cdpLogic';
-import { sendDataToDialog, switchLoader } from '../logic/pageLogic';
+import { sendDataToDialog } from '../logic/pageLogic';
+import { onPageSwitchLoader } from '../loader/loader.logic';
 
 async function eventHandler(data, client, resolve): Promise<void> {
   if (data.type === 'selectorClick') {
@@ -23,7 +24,7 @@ async function eventHandler(data, client, resolve): Promise<void> {
   }
   if (data.type === 'servise') {
     if (data.button === 'ok') {
-      await this.page.evaluate(switchLoader, false);
+      await this.page.evaluate(onPageSwitchLoader, false);
       await client.detach();
       resolve();
     }

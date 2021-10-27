@@ -1,13 +1,13 @@
 /* eslint-disable no-return-await */
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable import/prefer-default-export */
 import fs from 'fs';
 import path from 'path';
 
 import { ppdDialogBox } from './dialog/dialog';
-import { runDialog, jsEvalOnClick, switchLoader, dialogDrawer, addDialogHTML, addLoader } from './logic/pageLogic';
+import { runDialog, jsEvalOnClick, dialogDrawer, addDialogHTML } from './logic/pageLogic';
 import ppdEventHandler from './customEvents';
+import { onPageSwitchLoader, onPageAddLoader } from './loader/loader.logic';
 
 import './index.scss';
 
@@ -35,12 +35,12 @@ export async function cdpGetSelector(): Promise<void> {
     try {
       const textLog = event.args[0].value;
       const data = JSON.parse(textLog);
-      await this.page.evaluate(switchLoader, true);
+      await this.page.evaluate(onPageSwitchLoader, true);
 
       const ppdEvent = ppdEventHandler.bind(this);
       await ppdEvent(data, client, resolve);
 
-      await this.page.evaluate(switchLoader, false);
+      await this.page.evaluate(onPageSwitchLoader, false);
     } catch (err) {
       // debugger;
     }
@@ -56,7 +56,7 @@ export async function cdpGetSelector(): Promise<void> {
         await this.page.evaluate(ppdDialogBox);
         await this.page.evaluate(dialogDrawer, dialogId);
         await this.page.evaluate(addDialogHTML, { dialogId, dialogHtml });
-        await this.page.evaluate(addLoader, { loaderId, loaderHtml });
+        await this.page.evaluate(onPageAddLoader, { loaderId, loaderHtml });
         await this.page.evaluate(runDialog, dialogId);
 
         const engine = this.getEngine();
