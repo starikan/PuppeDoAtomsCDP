@@ -111,4 +111,13 @@ const runDialog = (dialogId) => {
   dialog.showDialog();
 };
 
-module.exports = { runDialog, jsEvalOnClick };
+const sendDataToDialog = (data) => {
+  window.dialogDrawer(data);
+};
+
+const switchLoader = (flag = true) => {
+  const loader = document.getElementById('ppd-wait-data-process-wraper');
+  loader.style.setProperty('display', flag ? 'grid' : 'none');
+};
+
+module.exports = { runDialog, jsEvalOnClick, sendDataToDialog, switchLoader };

@@ -6,8 +6,9 @@ const dialogId = 'dialog-ppd';
 const dialogCss = fs.readFileSync(path.resolve(path.join('.', 'dist', 'cdpGetSelector.css'))).toString();
 
 const { dialogBox } = require('./dialog/main');
-const { runDialog, jsEvalOnClick } = require('./logic/pageLogic');
-const { checkSelectorsInDom, generateSelectors } = require('./logic/cdpLogic');
+const { runDialog, jsEvalOnClick, switchLoader } = require('./logic/pageLogic');
+const { checkSelectorsInDom } = require('./logic/cdpLogic');
+const ppdEventHandler = require('./customEvents').default;
 
 async function cdpGetSelector() {
   const addDialogHTML = (dialogId) => {
@@ -109,20 +110,11 @@ async function cdpGetSelector() {
     };
   };
 
-  const sendDataToDialog = (data) => {
-    window.dialogDrawer(data);
-  };
-
-  const switchLoader = (flag = true) => {
-    const loader = document.getElementById('ppd-wait-data-process-wraper');
-    loader.style.setProperty('display', flag ? 'grid' : 'none');
-  };
-
   // await this.browser.on('disconnected', async (data) => {
   //   debugger;
   // });
 
-  const messageAdded = async (event, client, resolve) => {
+  const messageAdded = async ({ event, client, resolve }) => {
     if (!event.args.length) {
       return;
     }
@@ -131,36 +123,12 @@ async function cdpGetSelector() {
       const data = JSON.parse(textLog);
       await this.page.evaluate(switchLoader, true);
 
-      if (data.type === 'selectorClick') {
-        const selectors = generateSelectors(data.path);
-        const selectorsVariants = await checkSelectors(selectors);
-        // const { x, y } = data;
-        // const { nodeId } = await client.send('DOM.getNodeForLocation', { x, y });
-        // const nodeIdDescribe = await client.send('DOM.describeNode', { nodeId });
-
-        // const sendData = {
-        // data: selectorsVariants,
-        // type: 'atom',
-        // name: 'cdpGetSelector',
-        // envsId: this.envsId,
-        // stepId: this.stepId,
-        // };
-        // this.socket.sendYAML(sendData);
-        await this.page.evaluate(sendDataToDialog, { selectorsVariants });
-
-        console.log(selectorsVariants);
-      }
-      if (data.type === 'servise') {
-        if (data.button === 'ok') {
-          await this.page.evaluate(switchLoader, false);
-          await client.detach();
-          resolve();
-        }
-      }
+      const ppdEvent = ppdEventHandler.bind(this);
+      await ppdEvent(data, checkSelectors, client, resolve);
 
       await this.page.evaluate(switchLoader, false);
     } catch (err) {
-      // debugger;
+      debugger;
     }
   };
 
@@ -196,7 +164,7 @@ async function cdpGetSelector() {
         // await client.send('Console.enable');
         // client.on('Console.messageAdded', messageAdded);
         await client.send('Runtime.enable');
-        client.on('Runtime.consoleAPICalled', async (event) => await messageAdded(event, client, resolve));
+        client.on('Runtime.consoleAPICalled', async (event) => await messageAdded({ event, client, resolve }));
         client.on('Runtime.executionContextsCleared', async (e) => {
           debugger;
         });
