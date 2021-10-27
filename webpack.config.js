@@ -41,7 +41,7 @@ module.exports = {
   },
   plugins: [
     new CopyPlugin({
-      patterns: [{ from: './src/*.yaml', to: '[name].[ext]' }],
+      patterns: [{ from: './src/*.yaml', to: '[name][ext]' }],
     }),
     new MiniCssExtractPlugin({
       filename: 'cdpGetSelector.css',
