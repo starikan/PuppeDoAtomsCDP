@@ -1,5 +1,5 @@
-const dialogBox = () => {
-  window.DialogBox = function (id, callback) {
+const ppdDialogBox = () => {
+  window.ppdDialogBox = function (id, callback) {
     var _minW = 100, // The exact value get's calculated
       _minH = 1, // The exact value get's calculated
       _resizePixel = 5,
@@ -518,4 +518,4 @@ const dialogBox = () => {
   };
 };
 
-module.exports = { dialogBox };
+module.exports = { ppdDialogBox };

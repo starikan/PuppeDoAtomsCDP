@@ -5,7 +5,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import { dialogBox } from './dialog/main';
+import { ppdDialogBox } from './dialog/dialog';
 import { runDialog, jsEvalOnClick, switchLoader, dialogDrawer, addDialogHTML } from './logic/pageLogic';
 import ppdEventHandler from './customEvents';
 
@@ -48,7 +48,7 @@ export async function cdpGetSelector(): Promise<void> {
         await this.page.addStyleTag({ content: dialogCss });
 
         await this.page.evaluate(jsEvalOnClick);
-        await this.page.evaluate(dialogBox);
+        await this.page.evaluate(ppdDialogBox);
         await this.page.evaluate(dialogDrawer, dialogId);
         await this.page.evaluate(addDialogHTML, dialogId);
         await this.page.evaluate(runDialog, dialogId);

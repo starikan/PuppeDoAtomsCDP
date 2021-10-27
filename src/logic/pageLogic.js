@@ -107,7 +107,7 @@ const runDialog = (dialogId) => {
   const callbackFunction = (data) => {
     console.log(JSON.stringify({ button: data, type: 'servise' }));
   };
-  const dialog = DialogBox(dialogId, callbackFunction);
+  const dialog = ppdDialogBox(dialogId, callbackFunction);
   dialog.showDialog();
 };
 
