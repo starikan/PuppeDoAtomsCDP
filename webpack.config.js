@@ -1,6 +1,7 @@
 const path = require('path');
 
 const CopyPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   cache: true,
@@ -21,6 +22,10 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel-loader',
       },
+      {
+        test: /\.(s*)css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+      },
     ],
   },
   resolve: {
@@ -37,6 +42,9 @@ module.exports = {
   plugins: [
     new CopyPlugin({
       patterns: [{ from: './src/*.yaml', to: '[name].[ext]' }],
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'cdpGetSelector.css',
     }),
   ],
 };

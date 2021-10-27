@@ -1,8 +1,12 @@
+// = require('css-to-string-loader!css-loader!./file.css');
+// const dialogCss = require('./dialog/main.css').toString();
 async function cdpGetSelector() {
   const pick = (obj, fields) => Object.fromEntries(Object.entries(obj).filter(([key]) => fields.includes(key)));
 
   const dialogId = 'dialog-ppd';
 
+  // const dialogCss1 = require('./dialog/main.css');
+  // debugger;
   const dialogBox = () => {
     window.DialogBox = function (id, callback) {
       var _minW = 100, // The exact value get's calculated
@@ -981,15 +985,15 @@ async function cdpGetSelector() {
 
   this.run = () => {
     return new Promise(async (resolve, reject) => {
-      const yamlFile = 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js';
-      const lodashFile = 'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.core.min.js';
+      // const yamlFile = 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js';
+      // const lodashFile = 'https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.core.min.js';
       // https://github.com/johannhof/xpath-dom
-      const xpathFile = 'https://cdn.rawgit.com/johannhof/xpath-dom/master/dist/xpath-dom.min.js';
+      // const xpathFile = 'https://cdn.rawgit.com/johannhof/xpath-dom/master/dist/xpath-dom.min.js';
 
       try {
-        await this.page.addScriptTag({ url: yamlFile });
-        await this.page.addScriptTag({ url: lodashFile });
-        await this.page.addScriptTag({ url: xpathFile });
+        // await this.page.addScriptTag({ url: yamlFile });
+        // await this.page.addScriptTag({ url: lodashFile });
+        // await this.page.addScriptTag({ url: xpathFile });
         await this.page.addStyleTag({ content: dialogCss });
         await this.page.evaluate(jsEvalOnClick);
         await this.page.evaluate(dialogBox);
