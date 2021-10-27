@@ -13,7 +13,4 @@ yarn.lock
 /target
 /coverage
 /.temp
-/dist/**/*.js
-/dist/**/*.css
-/dist/**/*.yaml
-/dist/**/*.map
+/dist/**/*.*

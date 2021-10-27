@@ -6,14 +6,19 @@ import fs from 'fs';
 import path from 'path';
 
 import { ppdDialogBox } from './dialog/dialog';
-import { runDialog, jsEvalOnClick, switchLoader, dialogDrawer, addDialogHTML } from './logic/pageLogic';
+import { runDialog, jsEvalOnClick, switchLoader, dialogDrawer, addDialogHTML, addLoader } from './logic/pageLogic';
 import ppdEventHandler from './customEvents';
 
 import './index.scss';
 
-const dialogId = 'dialog-ppd';
+const loadingRoot = path.resolve(path.join('.', 'dist'));
 
-const dialogCss = fs.readFileSync(path.resolve(path.join('.', 'dist', 'cdpGetSelector.css'))).toString();
+const loaderId = 'ppd-wait-data-process-wraper';
+const loaderHtml = fs.readFileSync(path.join(loadingRoot, 'loader.html')).toString();
+
+const dialogId = 'dialog-ppd';
+const dialogHtml = fs.readFileSync(path.join(loadingRoot, 'dialog.html')).toString();
+const dialogCss = fs.readFileSync(path.join(loadingRoot, 'cdpGetSelector.css')).toString();
 
 // https://github.com/johannhof/xpath-dom
 const xpathFile = 'https://cdn.rawgit.com/johannhof/xpath-dom/master/dist/xpath-dom.min.js';
@@ -50,7 +55,8 @@ export async function cdpGetSelector(): Promise<void> {
         await this.page.evaluate(jsEvalOnClick);
         await this.page.evaluate(ppdDialogBox);
         await this.page.evaluate(dialogDrawer, dialogId);
-        await this.page.evaluate(addDialogHTML, dialogId);
+        await this.page.evaluate(addDialogHTML, { dialogId, dialogHtml });
+        await this.page.evaluate(addLoader, { loaderId, loaderHtml });
         await this.page.evaluate(runDialog, dialogId);
 
         const engine = this.getEngine();
