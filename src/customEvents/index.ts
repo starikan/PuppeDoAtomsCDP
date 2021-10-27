@@ -1,10 +1,10 @@
-import { generateSelectors } from '../logic/cdpLogic';
+import { generateSelectors, checkSelectors } from '../logic/cdpLogic';
 import { sendDataToDialog, switchLoader } from '../logic/pageLogic';
 
-async function eventHandler(data, checkSelectors, client, resolve): Promise<void> {
+async function eventHandler(data, client, resolve): Promise<void> {
   if (data.type === 'selectorClick') {
     const selectors = generateSelectors(data.path);
-    const selectorsVariants = await checkSelectors(selectors);
+    const selectorsVariants = await checkSelectors(selectors, this.page);
     // const { x, y } = data;
     // const { nodeId } = await client.send('DOM.getNodeForLocation', { x, y });
     // const nodeIdDescribe = await client.send('DOM.describeNode', { nodeId });

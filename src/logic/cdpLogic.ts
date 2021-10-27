@@ -10,7 +10,7 @@ const getCombinations = (charsInput: string[], divider = '.'): string[] => {
   return result;
 };
 
-export const checkSelectorsInDom = (selectors: string[] = []): Array<[string, number]> => {
+const checkSelectorsInDom = (selectors: string[] = []): Array<[string, number]> => {
   const selectorsStat = selectors.map((v) => [v, document.querySelectorAll(v).length] as [string, number]);
   return selectorsStat;
 };
@@ -70,4 +70,14 @@ export const generateSelectors = (elements: HTMLElement[]): string[] => {
   }
 
   return selectors;
+};
+
+export const checkSelectors = async (selectors, page): Promise<number> => {
+  let counts = await page.evaluate(checkSelectorsInDom, selectors);
+  const sortHelper = (v: string): number => v.split('').filter((char) => ['.', '>'].includes(char)).length;
+  counts = counts
+    .filter((v) => v[1] === 1)
+    .map((v) => v[0])
+    .sort((a, b) => sortHelper(a) - sortHelper(b));
+  return counts;
 };

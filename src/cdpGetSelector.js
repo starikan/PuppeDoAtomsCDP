@@ -7,7 +7,6 @@ const dialogCss = fs.readFileSync(path.resolve(path.join('.', 'dist', 'cdpGetSel
 
 const { dialogBox } = require('./dialog/main');
 const { runDialog, jsEvalOnClick, switchLoader } = require('./logic/pageLogic');
-const { checkSelectorsInDom } = require('./logic/cdpLogic');
 const ppdEventHandler = require('./customEvents').default;
 
 async function cdpGetSelector() {
@@ -90,19 +89,6 @@ async function cdpGetSelector() {
     body[0].appendChild(waiter);
   };
 
-  const checkSelectors = async (selectors) => {
-    let counts = await this.page.evaluate(checkSelectorsInDom, selectors);
-    counts = counts
-      .filter((v) => v[1] === 1)
-      .map((v) => v[0])
-      .sort(
-        (a, b) =>
-          a.split('').filter((v) => ['.', '>'].includes(v)).length -
-          b.split('').filter((v) => ['.', '>'].includes(v)).length,
-      );
-    return counts;
-  };
-
   const dialogDrawer = (dialogId) => {
     window.dialogDrawer = (data) => {
       const content = document.querySelector(`#${dialogId} .content`);
@@ -124,7 +110,7 @@ async function cdpGetSelector() {
       await this.page.evaluate(switchLoader, true);
 
       const ppdEvent = ppdEventHandler.bind(this);
-      await ppdEvent(data, checkSelectors, client, resolve);
+      await ppdEvent(data, client, resolve);
 
       await this.page.evaluate(switchLoader, false);
     } catch (err) {
