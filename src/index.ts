@@ -5,9 +5,10 @@ import fs from 'fs';
 import path from 'path';
 
 import { ppdDialogBox } from './dialog/dialog';
-import { runDialog, jsEvalOnClick, dialogDrawer, addDialogHTML } from './logic/pageLogic';
+import { onPageJsEvalOnClick } from './logic/page.logic';
 import ppdEventHandler from './customEvents';
 import { onPageSwitchLoader, onPageAddLoader } from './loader/loader.logic';
+import { onPageAddDialogHTML, onPageRunDialog, onPageDialogDrawer } from './dialog/dialog.logic';
 
 import './index.scss';
 
@@ -52,12 +53,12 @@ export async function cdpGetSelector(): Promise<void> {
         await this.page.addScriptTag({ url: xpathFile });
         await this.page.addStyleTag({ content: dialogCss });
 
-        await this.page.evaluate(jsEvalOnClick);
+        await this.page.evaluate(onPageJsEvalOnClick);
         await this.page.evaluate(ppdDialogBox);
-        await this.page.evaluate(dialogDrawer, dialogId);
-        await this.page.evaluate(addDialogHTML, { dialogId, dialogHtml });
+        await this.page.evaluate(onPageDialogDrawer, dialogId);
+        await this.page.evaluate(onPageAddDialogHTML, { dialogId, dialogHtml });
         await this.page.evaluate(onPageAddLoader, { loaderId, loaderHtml });
-        await this.page.evaluate(runDialog, dialogId);
+        await this.page.evaluate(onPageRunDialog, dialogId);
 
         const engine = this.getEngine();
 

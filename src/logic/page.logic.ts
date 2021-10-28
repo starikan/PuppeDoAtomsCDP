@@ -1,22 +1,22 @@
-const jsEvalOnClick = () => {
-  let ppdPreviousBorder = null;
-  let ppdElementClicked = null;
+type myWindow = Window &
+  typeof globalThis & { ppdClickHandler: any; ppdElementClicked: any; ppdPreviousBorder: any; xpath: any };
 
-  window.ppdClickHandler = function (event) {
+export const onPageJsEvalOnClick = (): void => {
+  (window as myWindow).ppdClickHandler = (event): boolean => {
     if (!event.ctrlKey) {
-      return true;
+      return false;
     }
     event.stopPropagation();
     event.preventDefault();
 
-    if (ppdElementClicked) {
-      ppdElementClicked.style.border = ppdPreviousBorder;
+    if ((window as myWindow).ppdElementClicked) {
+      (window as myWindow).ppdElementClicked.style.border = (window as myWindow).ppdPreviousBorder;
     }
 
-    ppdElementClicked = event.target;
-    ppdElementClicked.style.setProperty('border', ppdPreviousBorder);
+    (window as myWindow).ppdElementClicked = event.target;
+    (window as myWindow).ppdElementClicked.style.setProperty('border', (window as myWindow).ppdPreviousBorder);
 
-    const exportData = {
+    const exportData: any = {
       x: event.x,
       y: event.y,
       button: event.button,
@@ -41,7 +41,7 @@ const jsEvalOnClick = () => {
     event.path.forEach((p, i) => {
       if (i > 3) return;
 
-      const path = {
+      const path: any = {
         baseURI: p.baseURI,
         childElementCount: p.childElementCount,
         className: p.className,
@@ -80,7 +80,7 @@ const jsEvalOnClick = () => {
 
       path.attributes = {};
       if (p.attributes && p.attributes.length) {
-        for (let attr of p.attributes) {
+        for (const attr of p.attributes) {
           path.attributes[attr.name] = attr.value;
         }
       }
@@ -90,45 +90,20 @@ const jsEvalOnClick = () => {
       exportData.path.push(path);
     });
 
-    const target = event.target;
-    exportData.xpath = [xpath.getXPath(target), xpath.getUniqueXPath(target)];
+    const { target } = event;
+    exportData.xpath = [(window as myWindow).xpath.getXPath(target), (window as myWindow).xpath.getUniqueXPath(target)];
     exportData.type = 'selectorClick';
 
     // console.log(exportData);
-    console.log(JSON.stringify(exportData, { skipInvalid: true }));
+    console.log(JSON.stringify(exportData));
 
     target.style.setProperty('border', '2px solid red');
+    return true;
   };
-  window.removeEventListener('click', window.ppdClickHandler);
-  window.addEventListener('click', window.ppdClickHandler, true);
-};
 
-const runDialog = (dialogId) => {
-  const callbackFunction = (data) => {
-    console.log(JSON.stringify({ button: data, type: 'servise' }));
-  };
-  const dialog = ppdDialogBox(dialogId, callbackFunction);
-  dialog.showDialog();
-};
+  (window as myWindow).ppdPreviousBorder = null;
+  (window as myWindow).ppdElementClicked = null;
 
-const sendDataToDialog = (data) => {
-  window.dialogDrawer(data);
+  (window as myWindow).removeEventListener('click', (window as myWindow).ppdClickHandler);
+  (window as myWindow).addEventListener('click', (window as myWindow).ppdClickHandler, true);
 };
-
-const dialogDrawer = (dialogId) => {
-  window.dialogDrawer = (data) => {
-    const content = document.querySelector(`#${dialogId} .content`);
-    content.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
-  };
-};
-
-const addDialogHTML = ({ dialogId, dialogHtml }) => {
-  const body = document.getElementsByTagName('body');
-  const div = document.createElement('div');
-  div.setAttribute('id', dialogId);
-  div.setAttribute('class', 'dialog');
-  div.innerHTML = dialogHtml;
-  body[0].appendChild(div);
-};
-
-module.exports = { runDialog, jsEvalOnClick, sendDataToDialog, dialogDrawer, addDialogHTML};

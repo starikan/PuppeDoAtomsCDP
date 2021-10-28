@@ -1,5 +1,5 @@
-import { generateSelectors, checkSelectors } from '../logic/cdpLogic';
-import { sendDataToDialog } from '../logic/pageLogic';
+import { generateSelectors, checkSelectors } from '../logic/cdp.logic';
+import { sendDataToDialog } from '../dialog/dialog.logic';
 import { onPageSwitchLoader } from '../loader/loader.logic';
 
 async function eventHandler(data, client, resolve): Promise<void> {
